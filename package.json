@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "jwt-decode": "^4.0.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.22.1",
+    "node": "^25.9.0",
+    "nodejs": "^0.0.0"
+  },
+  "name": "school_transport",
+  "version": "1.0.0",
+  "description": "Gestion automatisée des transports scolaires",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

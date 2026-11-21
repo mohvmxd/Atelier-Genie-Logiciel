@@ -1,0 +1,32 @@
+school-transport/
+├── config/
+│   └── database.js
+├── middleware/
+│   └── auth.js
+├── models/
+│   ├── userModel.js
+│   ├── studentModel.js
+│   ├── routeModel.js
+│   ├── attendanceModel.js
+│   └── planningModel.js
+├── controllers/
+│   ├── authController.js
+│   ├── dashboardController.js
+│   ├── studentController.js
+│   ├── routeController.js
+│   ├── attendanceController.js
+│   └── planningController.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── dashboardRoutes.js
+│   ├── studentRoutes.js
+│   ├── routeRoutes.js
+│   ├── attendanceRoutes.js
+│   └── planningRoutes.js
+├── public/
+│   ├── css/
+│   └── js/
+├── views/          # si tu utilises EJS / Pug, sinon front séparé
+├── .env
+├── app.js
+└── package.json
