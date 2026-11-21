@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Gestion des élèves – Consultation et mise à jour de l'ensemble des enfants inscrits au transport.">
+    <title>Élèves – Transport scolaire</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="theme-light">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header class="app-header">
+        <div class="app-header__brand">
+            <span class="app-logo">🚍</span>
+            <span class="app-title">Transport Scolaire – ONG & Mairie</span>
+        </div>
+        <nav class="app-header__nav" aria-label="Navigation principale">
+            <a href="./dashboard.html" class="nav-link">Dashboard</a>
+            <a href="./students.html" class="nav-link nav-link--active">Élèves</a>
+            <a href="./routes.html" class="nav-link">Bus & circuits</a>
+            <a href="./planning.html" class="nav-link">Planification</a>
+            <a href="./parent-portal.html" class="nav-link">Portail Parent</a>
+            <button class="btn btn--ghost" id="toggle-theme" type="button">Mode sombre</button>
+            <button class="btn btn--danger" id="logout-btn">Déconnexion</button>
+        </nav>
+    </header>
+
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Filtres">
+            <h2 style="font-size: 1rem;">Filtres</h2>
+            <div class="form-field">
+                <label class="form-label" for="search-input">Rechercher</label>
+                <input type="text" class="form-input" id="search-input" placeholder="Nom ou ID">
+            </div>
+        </aside>
+
+        <main class="app-main" id="main-content">
+            <h1 class="sr-only">Gestion des élèves</h1>
+            <section aria-labelledby="students-title">
+                <h2 id="students-title" class="section-title">Liste des élèves</h2>
+                <table class="table" aria-label="Liste des élèves inscrits">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Date de naissance</th>
+                            <th scope="col">École</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table-body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--color-text-muted);">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ONG & Ville de Porto-Novo – Gestion du transport scolaire</p>
+    </footer>
+
+    <script src="../js/shared.js" defer></script>
+    <script defer>
+        // Check if user is authenticated
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = './login.html';
+        }
+
+        // Page-specific initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    window.location.href = './login.html';
+                });
+            }
+
+            // Load students
+            loadStudents();
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    filterStudents(query);
+                });
+            }
+        });
+
+        let allStudents = [];
+
+        async function loadStudents() {
+            const tableBody = document.getElementById('students-table-body');
+            const token = localStorage.getItem('authToken');
+
+            try {
+                const response = await fetch(`http://localhost:3648/api/students`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const students = await response.json();
+                allStudents = students || [];
+
+                if (allStudents.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--color-text-muted);">Aucun élève trouvé</td></tr>';
+                    return;
+                }
+
+                displayStudents(allStudents);
+            } catch (error) {
+                console.error('Erreur lors du chargement des élèves:', error);
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ef4444;">Erreur: ${error.message}</td></tr>`;
+            }
+        }
+
+        function displayStudents(students) {
+            const tableBody = document.getElementById('students-table-body');
+            
+            if (students.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--color-text-muted);">Aucun élève</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = students.map(student => `
+                <tr>
+                    <td>${student.fullname || '—'}</td>
+                    <td>${student.birth_date ? new Date(student.birth_date).toLocaleDateString('fr-FR') : '—'}</td>
+                    <td>${student.school_name || '—'}</td>
+                    <td><span style="display: inline-block; padding: 4px 12px; background: ${student.active ? '#10b981' : '#ef4444'}; color: white; border-radius: 999px; font-size: 0.85rem;">${student.active ? 'Actif' : 'Inactif'}</span></td>
+                    <td>
+                        <button class="btn btn--ghost" style="font-size: 0.85rem; padding: 4px 8px;">Modifier</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterStudents(query) {
+            if (!query) {
+                displayStudents(allStudents);
+                return;
+            }
+
+            const filtered = allStudents.filter(student =>
+                student.fullname.toLowerCase().includes(query) ||
+                (student.school_name && student.school_name.toLowerCase().includes(query))
+            );
+            displayStudents(filtered);
+        }
+    </script>
+</body>
+</html>

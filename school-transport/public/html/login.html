@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Connexion – Gestion du transport scolaire">
+    <title>Connexion – Transport Scolaire</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: var(--space-lg);
+        }
+
+        .login-card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .login-logo {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+            display: block;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .login-subtitle {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .login-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            padding: var(--space-md);
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group-login {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label-login {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input-login {
+            width: 100%;
+            padding: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input-login:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: var(--space-md) var(--space-lg);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            display: none;
+            padding: var(--space-md);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-md);
+            color: #ff6b6b;
+            margin-bottom: var(--space-lg);
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: inline-block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <span class="login-logo">🚍</span>
+                <h1 class="login-title">Transport Scolaire</h1>
+                <p class="login-subtitle">ONG & Mairie de Porto-Novo</p>
+            </div>
+
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="admin">Admin</button>
+                <button class="tab-btn" data-tab="parent">Parent</button>
+            </div>
+
+            <!-- Admin Login -->
+            <div id="admin-tab" class="tab-content active">
+                <div class="error-message" id="admin-error"></div>
+                <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+                    <div class="form-group-login">
+                        <label class="form-label-login" for="admin-email">Email</label>
+                        <input type="email" id="admin-email" class="form-input-login" placeholder="admin@example.com" required>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="form-label-login" for="admin-password">Mot de passe</label>
+                        <input type="password" id="admin-password" class="form-input-login" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="login-btn" id="admin-btn">
+                        <span class="loading" id="admin-loading"><span class="spinner"></span></span>
+                        Se connecter
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.85rem; color: var(--color-text-muted);">
+                    <strong>Démo:</strong> admin@test.com / admin123
+                </p>
+            </div>
+
+            <!-- Parent Login -->
+            <div id="parent-tab" class="tab-content">
+                <div class="error-message" id="parent-error"></div>
+                <form id="parent-login-form" onsubmit="handleParentLogin(event)">
+                    <div class="form-group-login">
+                        <label class="form-label-login" for="parent-email">Email</label>
+                        <input type="email" id="parent-email" class="form-input-login" placeholder="parent@example.com" required>
+                    </div>
+                    <div class="form-group-login">
+                        <label class="form-label-login" for="parent-password">Mot de passe</label>
+                        <input type="password" id="parent-password" class="form-input-login" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="login-btn" id="parent-btn">
+                        <span class="loading" id="parent-loading"><span class="spinner"></span></span>
+                        Se connecter
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: var(--space-lg); font-size: 0.85rem; color: var(--color-text-muted);">
+                    <strong>Démo:</strong> jean@test.com / parent123
+                </p>
+            </div>
+
+            <div class="login-footer">
+                <p>&copy; 2026 ONG & Ville de Porto-Novo</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3648/api';
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById(e.target.dataset.tab + '-tab').classList.add('active');
+            });
+        });
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const btn = document.getElementById('admin-btn');
+            const loading = document.getElementById('admin-loading');
+            const errorDiv = document.getElementById('admin-error');
+
+            btn.disabled = true;
+            loading.classList.add('show');
+            errorDiv.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login-admin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userRole', data.role);
+                    localStorage.setItem('userName', data.name);
+                    window.location.href = './dashboard.html';
+                } else {
+                    errorDiv.textContent = data.message || 'Identifiants incorrects';
+                    errorDiv.classList.add('show');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Erreur de connexion au serveur';
+                errorDiv.classList.add('show');
+                console.error('Login error:', error);
+            } finally {
+                btn.disabled = false;
+                loading.classList.remove('show');
+            }
+        }
+
+        async function handleParentLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('parent-email').value;
+            const password = document.getElementById('parent-password').value;
+            const btn = document.getElementById('parent-btn');
+            const loading = document.getElementById('parent-loading');
+            const errorDiv = document.getElementById('parent-error');
+
+            btn.disabled = true;
+            loading.classList.add('show');
+            errorDiv.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login-parent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userRole', 'PARENT');
+                    localStorage.setItem('userName', data.name);
+                    window.location.href = './parent-portal.html';
+                } else {
+                    errorDiv.textContent = data.message || 'Identifiants incorrects';
+                    errorDiv.classList.add('show');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Erreur de connexion au serveur';
+                errorDiv.classList.add('show');
+                console.error('Login error:', error);
+            } finally {
+                btn.disabled = false;
+                loading.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.sql
+update-*.sql
+gen-*.js
+get-users.js
+reset-pwd.js
+debug-db.js
+*CREDENTIALS*.txt
+*credentials*.txt
+test-*.html

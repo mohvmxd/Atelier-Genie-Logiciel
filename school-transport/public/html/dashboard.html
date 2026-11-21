@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Gestion automatisée du transport scolaire. Suivi en temps réel, présences, circuits, et portail parents.">
+    <title>Dashboard – Transport Scolaire</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="theme-light">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header class="app-header">
+        <div class="app-header__brand">
+            <span class="app-logo">🚍</span>
+            <span class="app-title">Transport Scolaire – ONG & Mairie</span>
+        </div>
+        <nav class="app-header__nav" aria-label="Navigation principale">
+            <a href="./dashboard.html" class="nav-link nav-link--active">Dashboard</a>
+            <a href="./students.html" class="nav-link">Élèves</a>
+            <a href="./routes.html" class="nav-link">Bus & circuits</a>
+            <a href="./planning.html" class="nav-link">Planification</a>
+            <a href="./parent-portal.html" class="nav-link">Portail Parent</a>
+            <button class="btn btn--ghost" id="toggle-theme" type="button">Mode sombre</button>
+            <button class="btn btn--danger" id="logout-btn">Déconnexion</button>
+        </nav>
+    </header>
+
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Navigation secondaire">
+            <h2 style="font-size: 1rem;">Filtres & actions</h2>
+            <div class="form-field" style="margin-bottom: var(--space-md);">
+                <label class="form-label" for="dashboard-date">Date</label>
+                <input type="date" class="form-input" id="dashboard-date">
+            </div>
+        </aside>
+
+        <main class="app-main" id="main-content">
+            <h1 class="sr-only">Dashboard Transport Scolaire</h1>
+            <section aria-labelledby="dashboard-metrics">
+                <h2 id="dashboard-metrics" class="section-title">Indicateurs principaux</h2>
+                <div class="grid grid--3">
+                    <div class="card card--metric">
+                        <div class="card__title">Élèves transportés</div>
+                        <div class="card__value" id="metric-students-today">—</div>
+                    </div>
+                    <div class="card card--metric">
+                        <div class="card__title">Bus en service</div>
+                        <div class="card__value" id="metric-buses-today">—</div>
+                    </div>
+                    <div class="card card--metric">
+                        <div class="card__title">Taux de présence</div>
+                        <div class="card__value" id="metric-attendance-rate">—</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ONG & Ville de Porto-Novo – Gestion du transport scolaire</p>
+    </footer>
+
+    <script src="../js/shared.js" defer></script>
+    <script defer>
+        // Check if user is authenticated
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = './login.html';
+        }
+
+        // Dashboard-specific initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update navigation visibility based on user role
+            if (typeof updateNavigationVisibility === 'function') {
+                updateNavigationVisibility();
+            }
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    window.location.href = './login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

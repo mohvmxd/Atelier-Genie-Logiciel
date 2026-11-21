@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Planification des trajets – Suivi des journées, présences, et création de jours de trajet.">
+    <title>Planification – Transport scolaire</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="theme-light">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header class="app-header">
+        <div class="app-header__brand">
+            <span class="app-logo">🚍</span>
+            <span class="app-title">Transport Scolaire – ONG & Mairie</span>
+        </div>
+        <nav class="app-header__nav" aria-label="Navigation principale">
+            <a href="./dashboard.html" class="nav-link">Dashboard</a>
+            <a href="./students.html" class="nav-link">Élèves</a>
+            <a href="./routes.html" class="nav-link">Bus & circuits</a>
+            <a href="./planning.html" class="nav-link nav-link--active">Planification</a>
+            <a href="./parent-portal.html" class="nav-link">Portail Parent</a>
+            <button class="btn btn--ghost" id="toggle-theme" type="button">Mode sombre</button>
+            <button class="btn btn--danger" id="logout-btn">Déconnexion</button>
+        </nav>
+    </header>
+
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Filtres">
+            <h2 style="font-size: 1rem;">Filtres</h2>
+            <div class="form-field">
+                <label class="form-label" for="planning-date">Date</label>
+                <input type="date" class="form-input" id="planning-date">
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="planning-route">Circuit</label>
+                <select class="form-select" id="planning-route">
+                    <option value="">Tous les circuits</option>
+                </select>
+            </div>
+        </aside>
+
+        <main class="app-main" id="main-content">
+            <h1 class="sr-only">Planification des trajets</h1>
+            <section aria-labelledby="planning-title">
+                <h2 id="planning-title" class="section-title">Planification des trajets</h2>
+                <div style="margin-bottom: var(--space-md);">
+                    <button class="btn btn--primary" id="add-trip-btn">+ Nouveau trajet</button>
+                </div>
+                <table class="table" aria-label="Planification des trajets">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Circuit</th>
+                            <th scope="col">Bus</th>
+                            <th scope="col">Départ</th>
+                            <th scope="col">Attendus</th>
+                            <th scope="col">Présents</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="planning-table-body">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--color-text-muted);">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ONG & Ville de Porto-Novo – Gestion du transport scolaire</p>
+    </footer>
+
+    <script src="../js/shared.js" defer></script>
+    <script defer>
+        // Check if user is authenticated
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = './login.html';
+        }
+
+        // Page-specific initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    window.location.href = './login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

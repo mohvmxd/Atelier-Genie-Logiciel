@@ -1,0 +1,41 @@
+school_transport
+├── app.js
+├── config
+│   └── database.js
+├── controllers
+│   ├── attendanceController.js
+│   ├── authController.js
+│   ├── dashboardController.js
+│   ├── parentController.js
+│   ├── planningController.js
+│   ├── routeController.js
+│   ├── studentController.js
+│   └── tripDayController.js
+├── middleware
+│   └── auth.js
+├── models
+│   ├── attendanceModel.js
+│   ├── busModel.js
+│   ├── parentModel.js
+│   ├── planningModel.js
+│   ├── routeModel.js
+│   ├── studentModel.js
+│   ├── tripDayModel.js
+│   └── userModel.js
+├── node_modules
+├── node_scripts
+│   └── hash-existing-passwords.js
+├── package.json
+├── package-lock.json
+├── Project_structure.txt
+├── public
+│   ├── css
+│   └── js
+├── routes
+│   ├── attendanceRoutes.js
+│   ├── authRoutes.js
+│   ├── dashboardRoutes.js
+│   ├── planningRoutes.js
+│   ├── routeRoutes.js
+│   └── studentRoutes.js
+└── views

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portail parents – Suivi de la présence et consultation des trajets de vos enfants.">
+    <title>Transport scolaire – Portail parents</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="theme-light">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header class="app-header">
+        <div class="app-header__brand">
+            <span class="app-logo">🚍</span>
+            <span class="app-title">Transport Scolaire – Portail Parents</span>
+        </div>
+        <nav class="app-header__nav" aria-label="Navigation principale">
+            <a href="./dashboard.html" class="nav-link">Dashboard</a>
+            <a href="./parent-portal.html" class="nav-link nav-link--active">Portail Parent</a>
+            <button class="btn btn--ghost" id="toggle-theme" type="button">Mode sombre</button>
+            <button class="btn btn--danger" id="logout-btn">Déconnexion</button>
+        </nav>
+    </header>
+
+    <div class="app-shell">
+        <aside class="app-sidebar" aria-label="Informations parent">
+            <h2 style="font-size: 1rem;">Mon compte</h2>
+            <div id="parent-info" style="padding: var(--space-md); background: rgba(15,23,42,0.8); border-radius: var(--radius-md);">
+                <p id="parent-name" style="font-weight: 600; margin-bottom: var(--space-sm);">—</p>
+                <p id="parent-email" style="font-size: 0.85rem; color: var(--color-text-muted);">—</p>
+            </div>
+        </aside>
+
+        <main class="app-main" id="main-content">
+            <h1 class="sr-only">Portail parent</h1>
+            
+            <section aria-labelledby="children-title">
+                <h2 id="children-title" class="section-title">Mes enfants</h2>
+                <p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">Suivi de la présence et des trajets</p>
+                <div id="children-container" class="grid grid--2">
+                    <p style="color: var(--color-text-muted); grid-column: 1/-1;">Chargement...</p>
+                </div>
+            </section>
+
+            <section aria-labelledby="attendance-title" style="margin-top: var(--space-xl);">
+                <h2 id="attendance-title" class="section-title">Historique (30 jours)</h2>
+                <table class="table" aria-label="Historique de présence des enfants">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Enfant</th>
+                            <th scope="col">Circuit</th>
+                            <th scope="col">Bus</th>
+                            <th scope="col">Présence</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-history">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--color-text-muted);">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ONG & Ville de Porto-Novo – Gestion du transport scolaire</p>
+    </footer>
+
+    <script src="../js/shared.js" defer></script>
+    <script defer>
+        // Check if user is authenticated
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = './login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update navigation visibility based on user role
+            if (typeof updateNavigationVisibility === 'function') {
+                updateNavigationVisibility();
+            }
+            
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('userName');
+                    window.location.href = './login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
